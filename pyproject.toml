@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "psique"
+version = "0.1.0"
+description = ""
+authors = ["Matheus B. Lopes <matheusblopes10@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+Django = "^3.2.7"
+django-rest-framework = "^0.1.0"
+prettyconf = "^2.2.1"
+psycopg2 = "^2.9.1"
+django-cors-headers = "^3.8.0"
+isort = "^5.9.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+pre-commit = "^2.15.0"
+pytest-cov = "^2.12.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+line_length = 110
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+known_local_folder = "apps,utils,tests,integrations_api"
+sections = "FUTURE,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
+default_section = "THIRDPARTY"
