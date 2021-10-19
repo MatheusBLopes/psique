@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.4.0
+    rev: v4.0.1
     hooks:
       - id: debug-statements
       - id: trailing-whitespace
@@ -8,19 +8,76 @@ repos:
       - id: check-merge-conflict
       - id: check-executables-have-shebangs
       - id: check-ast
-      - id: check-byte-order-marker
+      - id: fix-byte-order-marker
       - id: check-json
       - id: check-symlinks
       - id: check-vcs-permalinks
       - id: check-xml
+      - id: check-toml
       - id: check-yaml
       - id: detect-aws-credentials
         args: ["--allow-missing-credentials"]
       - id: detect-private-key
       - id: forbid-new-submodules
+      - id: no-commit-to-branch
+        args: [-b, main]
       - id: end-of-file-fixer
 
-  - repo: https://github.com/timothycrosley/isort
-    rev: 5.8.0
+  - repo: local
+    hooks:
+      - id: check-datetime-now
+        name: check_datetime_now
+        description: Prefer datetime.utcnow()
+        language: pygrep
+        entry: 'datetime\.now\(\)'
+        types: [python]
+
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
+    rev: v1.2.1
+    hooks:
+      - id: python-safety-dependencies-check
+
+  - repo: https://github.com/IamTheFij/docker-pre-commit
+    rev: v2.0.1
+    hooks:
+      - id: hadolint
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.1.0
+    hooks:
+      - id: detect-secrets
+        exclude: poetry.lock
+
+  - repo: https://gitlab.com/PyCQA/flake8
+    rev: 3.9.2
+    hooks:
+      - id: flake8
+        args: ["--exclude=docs/*,*migrations*", "--ignore=E501,W503,E203"]
+
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.9.3
     hooks:
       - id: isort
+
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: v1.9.0
+    hooks:
+      - id: python-check-mock-methods
+
+  - repo: https://github.com/psf/black
+    rev: 21.7b0
+    hooks:
+      - id: black
+
+  - repo: https://github.com/PyCQA/pydocstyle
+    rev: 6.1.1
+    hooks:
+      - id: pydocstyle
+        additional_dependencies: ["toml"]
+        args: [--add-ignore=D1, -e]
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v2.23.3
+    hooks:
+      - id: pyupgrade
+        args: [--py39-plus]

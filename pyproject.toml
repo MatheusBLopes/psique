@@ -1,26 +1,6 @@
-[tool.poetry]
-name = "psique"
-version = "0.1.0"
-description = ""
-authors = ["Matheus B. Lopes <matheusblopes10@gmail.com>"]
-
-[tool.poetry.dependencies]
-python = "^3.8"
-Django = "^3.2.7"
-django-rest-framework = "^0.1.0"
-prettyconf = "^2.2.1"
-psycopg2 = "^2.9.1"
-django-cors-headers = "^3.8.0"
-isort = "^5.9.3"
-
-[tool.poetry.dev-dependencies]
-pytest = "^5.2"
-pre-commit = "^2.15.0"
-pytest-cov = "^2.12.1"
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.black]
+line-length = 110
+target-version = ["py39"]
 
 [tool.isort]
 line_length = 110
@@ -28,6 +8,56 @@ multi_line_output = 3
 include_trailing_comma = true
 force_grid_wrap = 0
 use_parentheses = true
-known_local_folder = "apps,utils,tests,integrations_api"
-sections = "FUTURE,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
+known_local_folder = ["apps", "utils", "tests", "psique"]
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 default_section = "THIRDPARTY"
+
+[tool.pytest.ini_options]
+testpaths = "psique/tests"
+python_paths = "psique"
+DJANGO_SETTINGS_MODULE = "psique.settings"
+addopts = "-vv --reuse-db --tb=native --cov=apps"
+pytestenvvars__env_files = [".env"]
+pytestenvvars__dont_randomize_envvars = [
+    "DATABASE_URL",
+]
+
+[tool.coverage.report]
+exclude_lines = ["nocover"]
+show_missing = true
+omit = ["*/migrations/*"]
+
+[tool.poetry]
+name = "psique"
+version = "0.0.0"
+description = "psique"
+authors = ["Matheus Bachiste Lopes <matheusblopes10@gmail.com>"]
+repository = "psique"
+
+[tool.poetry.dependencies]
+python = "~3.9"
+dj-database-url = "*"
+django = "*"
+django-cache-url = "*"
+django-extensions = "*"
+django-filter = "*"
+djangorestframework = "*"
+prettyconf = "*"
+psycopg2 = "*"
+whitenoise = "*"
+django-cors-headers = "^3.10.0"
+
+[tool.poetry.dev-dependencies]
+factory_boy = "*"
+faker = "*"
+ipdb = "*"
+ipython = "*"
+pendulum = "*"
+pre-commit = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-deadfixtures = "*"
+pytest-django = "*"
+pytest-envvars = "*"
+pytest-pythonpath = "*"
+pytest-randomly = "*"
