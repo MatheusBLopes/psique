@@ -48,6 +48,7 @@ whitenoise = "*"
 django-cors-headers = "^3.10.0"
 djangorestframework-simplejwt = "^5.0.0"
 django-heroku = "^0.3.1"
+gunicorn = "^20.1.0"
 
 [tool.poetry.dev-dependencies]
 factory_boy = "*"
