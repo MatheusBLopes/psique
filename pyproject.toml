@@ -47,6 +47,7 @@ psycopg2 = "*"
 whitenoise = "*"
 django-cors-headers = "^3.10.0"
 djangorestframework-simplejwt = "^5.0.0"
+django-heroku = "^0.3.1"
 
 [tool.poetry.dev-dependencies]
 factory_boy = "*"
