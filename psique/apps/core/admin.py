@@ -1,6 +1,8 @@
 from django.contrib import admin
 
-from .models import Psychologist
+from .models import Category, Psychologist
+
+admin.site.register(Category)
 
 
 class PsiqueAdmin(admin.ModelAdmin):
