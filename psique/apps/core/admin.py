@@ -28,7 +28,7 @@ class CategoryAdmin(admin.ModelAdmin):
     fields = [
         "name",
     ]
-    list_display = "name"
+    list_display = ["name"]
 
 
 admin.site.register(Category, CategoryAdmin)
