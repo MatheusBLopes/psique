@@ -19,7 +19,7 @@ repos:
         args: ["--allow-missing-credentials"]
       - id: detect-private-key
       - id: forbid-new-submodules
-      - id: no-commit-to-branch
+      # - id: no-commit-to-branch
         args: [-b, main]
       - id: end-of-file-fixer
 
