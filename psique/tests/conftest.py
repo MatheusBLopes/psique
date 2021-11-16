@@ -3,12 +3,12 @@
 
 import pytest
 
+from .core.factories import PsychologistFactory
+
 # from rest_framework import status
 # from rest_framework.test import APIClient
 
 
-from .core.factories import PsycologistFactory
-
 @pytest.fixture
-def psycologist_object():
-    return PsycologistFactory()
+def Psychologist_object():
+    return PsychologistFactory()
