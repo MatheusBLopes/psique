@@ -35,7 +35,7 @@ authors = ["Matheus Bachiste Lopes <matheusblopes10@gmail.com>"]
 repository = "psique"
 
 [tool.poetry.dependencies]
-python = "~3.9"
+python = "3.9.3"
 dj-database-url = "*"
 django = "*"
 django-cache-url = "*"
