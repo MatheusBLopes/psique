@@ -1,97 +1,102 @@
-from rest_framework.views import APIView
+from django.contrib.auth.models import User
+from rest_framework import generics, permissions, status, viewsets
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
 
-from django.contrib.auth.models import Group, Permission
-from rest_framework import permissions, viewsets
-
-from .models import Psycologist
-from .serializers import PsycologistSerializer, UserSerializer
-import datetime
-
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
+from .models import Category, Psychologist
+from .serializers import CategorySerializer, LoginSerializer, PsychologistSerializer, RegisterSerializer
 
 
-# class UserViewSet(viewsets.ModelViewSet):
-#     queryset = User.objects.all().order_by('-date_joined')
-#     serializer_class = UserSerializer
-#     permission_classes = [permissions.IsAuthenticated]
+class PsychologistViewSet(viewsets.ModelViewSet):
+    queryset = Psychologist.objects.all()
+    serializer_class = PsychologistSerializer
+    permission_classes = [IsAuthenticated]
 
 
-# class GroupViewSet(viewsets.ModelViewSet):
-#     queryset = Group.objects.all()
-#     serializer_class = GroupSerializer
-#     permission_classes = [permissions.IsAuthenticated]
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [IsAuthenticated]
 
 
-class PsycologistViewSet(viewsets.ModelViewSet):
-    queryset = Psycologist.objects.all()
-    serializer_class = PsycologistSerializer
+class LoginView(TokenObtainPairView):
+    serializer_class = LoginSerializer
 
 
-class RegisterView(APIView):
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = RegisterSerializer
+
+
+class LogoutAndBlacklistRefreshTokenForUserView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            print(e)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class LoginView(APIView):
-    def post(self, request):
-        email = request.data['email']
-        password = request.data['password']
-
-        user = User.objects.filter(email=email).first()
-
-        if user is None:
-            raise AuthenticationFailed('User not found!')
-
-        if not user.check_password(password):
-            raise AuthenticationFailed('Incorrect password or email!')
-
-        payload = {
-            'id': user.id,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-            'iat': datetime.datetime.utcnow()
-        }
-
-        token = jwt.encode(payload, 'secret', algorithm='HS256')
-
-        response = Response()
-
-        response.set_cookie(key='jwt', value=token, httponly=True)
-        response.data = {
-            'jwt': token
-        }
-        return response
-
-
-class UserView(APIView):
+class RequestConsultationView(APIView):
+    permission_classes = (permissions.AllowAny,)
 
     def get(self, request):
-        token = request.COOKIES.get('jwt')
+        psychologist = (
+            Psychologist.objects.filter(status="ready", blocked=False, in_an_appointment=False)
+            .values()
+            .first()
+        )
 
-        if not token:
-            raise AuthenticationFailed('Unauthenticated!')
+        if psychologist:
+            return Response(data=psychologist, status=status.HTTP_200_OK)
 
-        try:
-            payload = jwt.decode(token, 'secret', algorithm=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated!')
-
-        user = User.objects.filter(id=payload['id']).first()
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
+        return Response(data={"message": "Not a Psychologist found"}, status=status.HTTP_404_NOT_FOUND)
 
 
-class LogoutView(APIView):
+class AcceptConsultationView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request, psychologist_id):
+        psychologist = Psychologist.objects.filter(id=psychologist_id).first()
+
+        if psychologist.in_an_appointment:
+            return Response(
+                data={"message": "Psychologist already in an appointment"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        else:
+            psychologist.in_an_appointment = True
+            psychologist.save()
+            return Response(data={"message": "Consultation successfully accepted"}, status=status.HTTP_200_OK)
+
+
+class CloseConsultationView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
-        response = Response()
-        response.delete_cookie('jwt')
-        response.data = {
-            'message': 'success'
-        }
-        return response
+        user_id = request.auth["user_id"]
+        psychologist = Psychologist.objects.filter(user_id_id=user_id).first()
+
+        if not psychologist:
+            return Response(
+                data={"message": "You don't have your register ended yet"}, status=status.HTTP_404_BAD_REQUEST
+            )
+
+        if psychologist.in_an_appointment:
+            psychologist.in_an_appointment = False
+            psychologist.save()
+            return Response(data={"message": "Consultation successfully ended"}, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                data={"message": "You are not currently on an appointment."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
