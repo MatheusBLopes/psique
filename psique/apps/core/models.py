@@ -99,6 +99,9 @@ class TimestampedModel(BaseModel):
 class Category(models.Model):
     name = CharField(max_length=200)
 
+    def __str__(self):
+        return self.name
+
 
 class Psychologist(UUIDModel):
     full_name = CharField(max_length=200, default="")
