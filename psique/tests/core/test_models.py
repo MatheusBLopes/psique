@@ -1,15 +1,15 @@
-from tests.core.factories import PsycologistFactory
 import pytest
 
-from  apps.core.models import Psycologist
+# from apps.core.models import Psychologist
+# from tests.core.factories import PsychologistFactory
 
 pytestmark = pytest.mark.django_db
 
-class TestPsycologist:
 
-    def test_psycologist(self, psycologist_object):
+class TestPsychologist:
+    def test_psychologist(self, psychologist_object):
         pass
-        # psycologist = Psycologist.objects.create(
+        # psychologist = Psychologist.objects.create(
         #     name="Matheus B. Lopes",
         #     crm="111.1111.111.11",
         #     email="matheus.bachiste@teste.com",
@@ -21,12 +21,12 @@ class TestPsycologist:
         #     password="123456",
         # )
 
-        # assert psycologist.name == "Matheus B. Lopes"
-        # assert psycologist.crm == "111.1111.111.11"
-        # assert psycologist.email == "matheus.bachiste@teste.com"
-        # assert psycologist.phone == "41999999999"
-        # assert psycologist.address == "Rua das dores - SP - 83324555"
-        # assert psycologist.cpf == "11122233344"
-        # assert psycologist.rg == "123456789"
-        # assert psycologist.birth_date == "27/06/1998"
-        # assert psycologist.password == "123456"
+        # assert psychologist.name == "Matheus B. Lopes"
+        # assert psychologist.crm == "111.1111.111.11"
+        # assert psychologist.email == "matheus.bachiste@teste.com"
+        # assert psychologist.phone == "41999999999"
+        # assert psychologist.address == "Rua das dores - SP - 83324555"
+        # assert psychologist.cpf == "11122233344"
+        # assert psychologist.rg == "123456789"
+        # assert psychologist.birth_date == "27/06/1998"
+        # assert psychologist.password == "123456"

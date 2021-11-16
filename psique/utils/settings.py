@@ -2,7 +2,6 @@ from django.conf import settings
 from django.utils.module_loading import import_string
 
 
-
 def get_project_package(project_dir):
     if (project_dir / "project_name").exists():
         return "project_name"

@@ -1,11 +1,11 @@
 import factory
 
-from apps.core.models import Psycologist
+from apps.core.models import Psychologist
 
-class PsycologistFactory(factory.django.DjangoModelFactory):
 
+class PsychologistFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = Psycologist
+        model = Psychologist
 
     name = "Matheus B. Lopes"
     crm = "111.1111.111.11"
