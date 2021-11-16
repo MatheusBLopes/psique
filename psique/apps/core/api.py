@@ -100,3 +100,16 @@ class CloseConsultationView(APIView):
                 data={"message": "You are not currently on an appointment."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+class UserHasPsychologistView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_id = request.auth["user_id"]
+        psychologist = Psychologist.objects.filter(user_id_id=user_id).values().first()
+
+        if psychologist:
+            return Response(data=psychologist, status=status.HTTP_200_OK)
+
+        return Response(data={"message": "Not a Psychologist found"}, status=status.HTTP_404_NOT_FOUND)

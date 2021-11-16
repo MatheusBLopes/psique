@@ -11,6 +11,7 @@ from apps.core.api import (
     PsychologistViewSet,
     RegisterView,
     RequestConsultationView,
+    UserHasPsychologistView,
 )
 
 app_name = "core"
@@ -30,7 +31,12 @@ urlpatterns = [
         AcceptConsultationView.as_view(),
         name="accept-consultation",
     ),
-    path("end-consultation/", CloseConsultationView.as_view(), name="free-for-consultation"),
+    path("end-consultation/", CloseConsultationView.as_view(), name="end-consultation"),
+    path(
+        r"user-has-psychologist/",
+        UserHasPsychologistView.as_view(),
+        name="user-has-psychologist",
+    ),
 ]
 
 urlpatterns += router.urls
