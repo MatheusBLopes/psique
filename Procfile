@@ -1,1 +1,1 @@
-web: gunicorn psique.wsgi
+web: gunicorn psique-api.wsgi
